@@ -1,22 +1,8 @@
-// 16-bit magnitude to 5-digit BCD + sign digit, with 3 view modes
-// Method: repeated /10 and %10 (combinational)
-//
-// view_mode = 2'b00 -> show digits d0..d3 (ones..thousands)
-// view_mode = 2'b01 -> show digits d1..d4 (tens..ten-thousands)
-// view_mode = 2'b10 -> show digits d2..d5 (hundreds..sign)
-//
-// d5 is the "sign digit":
-//   - positive: blank
-//   - negative: minus sign (encoded as 4'hA)
-
 module bin16_to_bcd_view (
     input  wire [15:0] bin_in,     // 16-bit MAGNITUDE (absolute value)
     input  wire        sign_neg,   // 1 = negative, 0 = positive
     input  wire [1:0]  view_mode,  // 00,01,10 -> 3 view modes
 
-    // Full "digits":
-    //  d0..d4 = numeric digits
-    //  d5     = sign digit (blank or minus)
     output reg  [3:0] d0,          // ones
     output reg  [3:0] d1,          // tens
     output reg  [3:0] d2,          // hundreds
@@ -34,9 +20,6 @@ module bin16_to_bcd_view (
     // Internal temporary variable used for /10 and %10
     integer temp;
 
-    // -----------------------------
-    // Binary magnitude -> BCD digits (d0..d4)
-    // -----------------------------
     always @* begin
         // start from the magnitude
         temp = bin_in;
@@ -70,9 +53,6 @@ module bin16_to_bcd_view (
             d5 = 4'hF;  // blank
     end
 
-    // -----------------------------
-    // View-mode window over d0..d5
-    // -----------------------------
     always @* begin
         case (view_mode)
             2'b00: begin
