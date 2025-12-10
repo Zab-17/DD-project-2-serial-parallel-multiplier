@@ -1,18 +1,16 @@
 //====================================================
 // File: bcd_to_7seg.v
-// One BCD digit (0–9, plus 'A' for minus) -> 7-segment
+// One BCD digit (0â€“9, plus 'A' for minus) -> 7-segment
 // Target: Basys 3 (common-anode, active-low)
 // seg = {CA, CB, CC, CD, CE, CF, CG}
 // dp  = decimal point (active-low)
 //====================================================
 module bcd_to_7seg (
-    input  wire [3:0] bcd,   // BCD digit 0–9, or 4'hA = '-'
-    input  wire       dp_on, // 1 = turn DP ON, 0 = DP OFF
-    output reg  [6:0] seg,   // {CA, CB, CC, CD, CE, CF, CG}
-    output reg        dp
+    input  wire [3:0] bcd,
+    output reg  [6:0] seg
 );
 
-    always @* begin
+    always @(*) begin
         // default: all segments OFF (inactive = 1 for common-anode)
         seg = 7'b111_1111;
 
@@ -32,9 +30,6 @@ module bcd_to_7seg (
 
             default: seg = 7'b111_1111; // blank for anything else (e.g. 4'hF)
         endcase
-
-        // Decimal point (also active-low)
-        dp = dp_on ? 1'b0 : 1'b1;
     end
 
 endmodule
